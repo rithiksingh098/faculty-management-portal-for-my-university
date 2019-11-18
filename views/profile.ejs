@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="theme-color" content="#222222" />
+
+<head>
+    <title>Faculty Portal - Profile</title>
+    <link rel="icon" href="http://wqimg.s3.amazonaws.com/data/esp/favico/default.ico" type="image/png" sizes="32x32">
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        font-family: 'Lato', sans-serif;
+    }
+
+    .section-form {
+        width: 37em;
+        height: 35em;
+        margin: 3em auto;
+        background-color: #f3efe7;
+        padding: 2em;
+        overflow: hidden;
+    }
+
+    .section-form .intro {
+        margin-bottom: 2em;
+    }
+
+    .section-form h1 {
+        text-align: center;
+        font-size: 1.6em;
+        margin-bottom: -0.2em;
+    }
+
+    .section-form h2 {
+        text-align: center;
+        font-size: 1em;
+    }
+
+    input[type=text],
+    input[type=password] {
+        height: 30px;
+    }
+
+    input[type=text],
+    input[type=password] {
+        width: 400px;
+        margin: 0.6em 1em 0em 1em;
+        font-size: .9em;
+        color: #222;
+        font-weight: 300;
+        padding: .5em 1em;
+        border: 2px solid #dddddd;
+        border-radius: 17.5px;
+        font-weight: 300;
+        outline: none;
+    }
+
+    .cardPane {
+        height: 28em;
+        overflow-y: scroll;
+        padding-top: 5px;
+    }
+
+    .cardPane::-webkit-scrollbar {
+        display: none;
+    }
+
+    .card {
+        float: top;
+        width: 100%;
+        height: 100px;
+        background-color: #fff;
+        margin-bottom: 15px;
+        padding-top: 7px;
+        border-radius: 15px;
+    }
+
+    .handle {
+        width: 85px;
+        height: 100%;
+        float: right;
+        margin-top: -35px;
+    }
+
+    .handle div {
+        width: 70%;
+        height: 40%;
+        text-align: center;
+        padding: 10px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .cardAdd {
+        float: top;
+        width: 100%;
+        height: 100px;
+    }
+
+    .add {
+        width: 45px;
+        height: 45px;
+        font-size: 35px;
+        text-align: center;
+        background-color: #fff;
+        color: #888888;
+        border-radius: 22.5px;
+        box-shadow: 0px 0px 3px 1px #888888;
+        padding-top: 3px;
+        cursor: pointer;
+        margin: auto;
+        user-select: none;
+    }
+</style>
+
+<body>
+
+    <div class="section-form">
+        <form method="post" action="#">
+            <div class="intro">
+                <h1>
+                    <%= name%>
+                </h1>
+                <h2>
+                    <%= id%>
+                </h2>
+            </div>
+            <div class="cardPane">
+                <div class="cardAdd">
+                    <div class="add">+</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script>
+    function getCard(title, val) {
+        return '<div class="card">' +
+            '<input type="text" value="' + title + '" placeholder="Enter Title" class="id" tabindex="1"/>' +
+            '<input type="text" value="' + val + '" placeholder="Enter Description" class="val" tabindex="2"/>' +
+            '<div class="handle">' +
+            '    <div class="del">❌</div>' +
+            '    <div class="save">✔️</div>' +
+            '</div></div>';
+    }
+    var title = ("<%= title%>").split('[+]');
+    var val = ("<%= val%>").split('[+]');
+    for (var i = 0; i < title.length; i++) {
+        $(getCard(title[i], val[i])).insertBefore('.cardAdd');
+        $(".cardPane").scrollTop($(".cardPane").prop("scrollHeight"));
+    }
+    $('.add').click(function () {
+        $(getCard('', '')).insertBefore('.cardAdd');
+        $(".cardPane").scrollTop($(".cardPane").prop("scrollHeight"));
+    });
+    $('.cardPane').on('click', '.del', function () {
+        const card = $(this).parent().parent();
+        const http = new XMLHttpRequest();
+        http.open('PUT', '/del');
+        http.setRequestHeader('Content-type', 'application/json');
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                const res = http.responseText;
+                if (res == '1') $('.cardPane').find(card).remove();
+                else alert('Failed to remove');
+            }
+        };
+        http.send(JSON.stringify({
+            id: '<%= id%>',
+            title: card.find('.id').val()
+        }));
+    });
+    $('.cardPane').on('click', '.save', function () {
+        const id = $(this).parent().parent().find('.id').val();
+        const val = $(this).parent().parent().find('.val').val();
+        const http = new XMLHttpRequest();
+        http.open('PUT', '/add');
+        http.setRequestHeader('Content-type', 'application/json');
+        //onready is a listener which should be initialized before send
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                const res = http.responseText;
+                if (res == '1') alert('Saved Successfully');
+                else alert('Failed to Save');
+            }
+        };
+        http.send(JSON.stringify({
+            id: '<%= id%>',
+            title: id,
+            val: val
+        }));
+    });
+</script>
+
+</html>

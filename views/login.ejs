@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="theme-color" content="#222222" />
+
+<head>
+    <title>Faculty Portal - Login</title>
+    <link rel="icon" href="http://wqimg.s3.amazonaws.com/data/esp/favico/default.ico" type="image/png" sizes="32x32">
+</head>
+<style>
+    * {
+  	box-sizing: border-box;
+}
+
+html {
+  	font-family: 'Lato', sans-serif;
+}
+
+.section-form {
+	width: 37em;
+	margin: 3em auto;
+	background-color: #f3efe7;
+	padding: 2em;
+}
+.section-form .intro {
+  	margin-bottom: 2em;
+}
+.section-form h1 {
+	text-align: center;
+	font-size: 1.6em;
+	margin-bottom: 0.6em;
+}
+.section-form h2 {
+	text-align: center;
+	font-size: 1.23077em;
+}
+
+input[type=number], input[type=password] {
+	height: 45px;
+}
+
+input[type=number], input[type=password]{
+	width: 100%;
+	margin-bottom: 1em;
+	font-size: .9em;
+	color: #cfcece;
+	font-weight: 300;
+	padding: .5em 1em;
+	border: none;
+	color: #555555;
+    font-weight: 300;
+    outline: none;
+}
+
+input[type=button] {
+	cursor: pointer;
+	margin: 10px 0 10px 0;
+	width: 100%;
+	height: 45px;
+	text-align: center;
+	padding: .5em 2em;
+	background: transparent;
+	border: 2px solid #636363;
+	color: #636363;
+	font-size: 1em;
+    font-weight: 400;
+    border-radius: 22.5px;
+    outline: none;
+}
+input[type=button]:active {
+    background: #636363;
+    color: #f3efe7;
+}
+
+</style>
+
+<body>
+
+    <div class="section-form">
+        <form method="post" action="#">
+            <div class="intro">
+                <h1>Faculty Portal</h1>
+                <h2>Login your account</h2>
+            </div>
+            <input type="number" value="" placeholder="Enter Your Faculty ID" class="id" tabindex="1" />
+            <input type="password" value="" placeholder="Enter Your Password" class="pass" tabindex="2" />
+            <input type="button" value="LOGIN" class="submit" tabindex="3" />
+            <input type="button" value="Create Account" class="signup" tabindex="4" />
+        </form>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $('.signup').click(function () {
+        window.location.href = "/signup";
+    });
+    $('.submit').click(function () {
+        let id = $('.id').val();
+        const http = new XMLHttpRequest();
+        http.open('POST', '/login');
+        http.setRequestHeader('Content-type', 'application/json');
+        http.onreadystatechange = function () {
+            if (http.readyState == XMLHttpRequest.DONE) {
+                const res = http.responseText;
+                if (res == -1) alert("User Doesn't Exist");
+                else if (res == 0) alert("Incorrect Password");
+                else {
+                    var url = '/profile';
+                    var form = $('<form action="' + url + '" method="post">' +
+                        '<input type="hidden" name="id" value="' + id + '" />' +
+                        '</form>');
+                    $('body').append(form);
+                    form.submit();
+                }
+            }
+        };
+        http.send(JSON.stringify({
+            id: id,
+            pswd: $('.pass').val()
+        }));
+    });	
+</script>
+
+</html>

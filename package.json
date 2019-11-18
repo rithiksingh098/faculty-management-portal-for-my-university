@@ -1,0 +1,30 @@
+{
+  "name": "faculty-management-portal-for-my-university",
+  "version": "1.0.0",
+  "description": "Using django and mongo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rithiksingh098/faculty-management-portal-for-my-university.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rithiksingh098/faculty-management-portal-for-my-university/issues"
+  },
+  "homepage": "https://github.com/rithiksingh098/faculty-management-portal-for-my-university#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^2.7.2",
+    "express": "^4.17.1",
+    "mongodb": "^3.3.4",
+    "mongoose": "^5.7.11",
+    "nodemon": "^1.19.4",
+    "validator": "^12.0.0"
+  }
+}
