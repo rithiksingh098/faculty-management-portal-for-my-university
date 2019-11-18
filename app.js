@@ -189,6 +189,6 @@ app.put("/del", (req, res) => {
 app.get('/*',(req,res) => {
     res.redirect('/login');
 });
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("listening at 3000");
 });
